@@ -2,9 +2,10 @@ import argparse
 import asyncio
 import time
 from datetime import datetime
-from communex._common import get_node_url
+from typing import Dict, List, Union, Tuple
+from communex.cli._common import get_node_url
 from communex.client import CommuneClient
-from communex.compat.key import check_ss58_address, classic_load_key
+from communex.compat.key import classic_load_key
 from communex.module.module import Module
 from communex.types import Ss58Address
 import sr25519
@@ -19,7 +20,7 @@ logger.add("logs/log_{time:YYYY-MM-DD}.log", rotation="1 day")
 
 def set_weights(
     score_dict: dict[int, float], netuid: int, client: CommuneClient, key: Keypair
-) -> None:
+):
     """
     Set weights for miners based on their scores.
 
@@ -46,16 +47,15 @@ def set_weights(
     weighted_scores = {}
     for i in range(half_ids):
         weighted_scores[sorted_ids[i]] = int(weights[i])
-    
+
     remain_weight = 100 - sum(weighted_scores.values())
     for uid in weighted_scores.keys():
         score = weighted_scores.get(uid, 0)
-        weighted_scores[uid] = int(score +(remain_weight/half_ids))
-    
+        weighted_scores[uid] = int(score + (remain_weight / half_ids))
 
     # filter out 0 weights
     weighted_scores = {k: v for k, v in weighted_scores.items() if v > 0}
-    uids = list(weighted_scores.keys())        
+    uids = list(weighted_scores.keys())
     weights = list(weighted_scores.values())
 
     logger.info(f"weights for the following uids: {uids}")
@@ -64,19 +64,19 @@ def set_weights(
     return weighted_scores
 
 
-def _format_data(data: Union[List, Dict, tuple, str]) -> bytes:
-    '''
+def _format_data(data: Union[List[Dict[tuple, str]], Dict[tuple, str], str]) -> bytes:
+    """
     format data to str message
     :param data:
     :type data:
     :return:
     :rtype:
-    '''
+    """
     if isinstance(data, dict):
         sorted_data = sorted(data.items(), key=lambda x: x[0])
-        message = ''.join(str(value) for _, value in sorted_data)
+        message = "".join(str(value) for _, value in sorted_data)
     elif isinstance(data, (list, tuple)):
-        message = ''.join(str(value) for key, value in data)
+        message = "".join(str(value) for key, value in data)
     else:
         message = data
     return message.encode()
@@ -102,8 +102,7 @@ def get_netuid(client: CommuneClient, subnet_name: str = "OpenScope"):
 
 
 class TradeValidator(Module):
-    """A class for calculating roi data using a Synthia network.
-    """
+    """A class for calculating roi data using a Synthia network."""
 
     def __init__(
         self,
@@ -138,27 +137,25 @@ class TradeValidator(Module):
         modules_keys = self.client.query_map_key(syntia_netuid)
         val_ss58 = self.key.ss58_address
         if val_ss58 not in modules_keys.values():
-            raise ValueError(
-                f"validator key {val_ss58} is not registered in subnet"
-                )
+            raise ValueError(f"validator key {val_ss58} is not registered in subnet")
         # Validation
         score_dict: dict[int, float] = {}
-        
+
         # == Validation loop / Scoring ==
         accounts = {}
         uid_map = {}
         for uid, address in modules_keys.items():
-            account = init_account(address) 
+            account = init_account(account_id=address)
             accounts[address] = account
             uid_map[address] = uid
-        
+
         timestamp = int(time.time())
-        pub_key = keypair.public_key.hex()
-        msg = f'{val_ss58}{pub_key}{timestamp}'
+        pub_key = self.key.public_key.hex()
+        msg = f"{val_ss58}{pub_key}{timestamp}"
         message = _format_data(msg)
-        signature = sr25519.sign(  # type: ignore
-                (keypair.public_key, keypair.private_key), message).hex()  # type: ignore
-        orders = get_recent_orders(val_ss58, pub_key, timestamp, signature)
+        signature = sr25519.sign((pub_key, self.key.private_key), message).hex()
+        orders = get_recent_orders(val_ss58, pub_key, timestamp, signature) 
+        
         latest_price = get_latest_price(val_ss58, pub_key, timestamp, signature)
         for order in orders:
             process_order(accounts, order, latest_price)
@@ -175,9 +172,7 @@ class TradeValidator(Module):
             # score has to be lower or eq to 1, as one is the best score
             uid = uid_map[address]
             if uid is None:
-                raise ValueError(
-                f"{address} is not registered in subnet"
-                )
+                raise ValueError(f"{address} is not registered in subnet")
             score_dict[uid] = scores.get(address, 0)
 
         if not score_dict:
@@ -198,10 +193,8 @@ class TradeValidator(Module):
                 score = 0.8 * roi_score + 0.2 * win_score
                 score_dict[uid] = score
         return score_dict
-    
-    def upload_data(
-        self, data: list[dict[str, str]]
-    ) -> None:
+
+    def upload_data(self, data: list[dict[str, str]]) -> None:
         """Uploads the validation data.
 
         Args:
@@ -221,26 +214,28 @@ class TradeValidator(Module):
                 if attempt > max_attempts:
                     logger.info("Could not upload data. ")
                     break
-    
 
     def validation_loop(self, config: Config | None = None) -> None:
         # Run validation
         while True:
             start_time = time.time()
-            formatted_start_time = datetime.fromtimestamp(start_time).strftime('%Y-%m-%d %H:%M:%S')
+            formatted_start_time = datetime.fromtimestamp(start_time).strftime(
+                "%Y-%m-%d %H:%M:%S"
+            )
             print(f"check validator time: {formatted_start_time}")
             weighted_scores = asyncio.run(self.validate_step(config, self.netuid))
             print(f"vote data: {weighted_scores}")
             invertal = int(config.validator.get("interval"))
             time.sleep(invertal)
-                
-if __name__ == '__main__':
+
+
+if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="transaction validator")
     parser.add_argument("--config", type=str, default=None, help="config file path")
-    args = parser.parse_args()  
+    args = parser.parse_args()
 
     if args.config is None:
-        default_config_path = 'env/config.ini'
+        default_config_path = "env/config.ini"
         config_file = default_config_path
     else:
         config_file = args.config
@@ -251,9 +246,9 @@ if __name__ == '__main__':
     keypair = classic_load_key(config.validator.get("keyfile"))
 
     validator = TradeValidator(
-        keypair, 
-        synthia_uid, 
-        c_client, 
+        keypair,
+        synthia_uid,
+        c_client,
         call_timeout=60,
     )
     validator.validation_loop(config)

@@ -3,3 +3,4 @@
 .idea/
 __pycache__
 ./resources/.DS_Store
+.venv
