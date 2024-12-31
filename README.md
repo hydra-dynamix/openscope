@@ -29,62 +29,6 @@ In the fast-paced world of cryptocurrency, staying ahead of the game is crucial.
 
 OpenScope harnesses the power of 0xScope's comprehensive cryptocurrency event dataset to train cutting-edge, event-driven trading models. By leveraging a diverse range of on-chain data, technical analysis, and news events, such as exchange deposits/withdrawals, project collaborations, and influencer signals, OpenScope empowers miners to develop highly performant AI models that predict potential price movements with unparalleled accuracy.
 
-## How OpenScope works
-
-The OpenScope Subnet will have 3 phase, with different miner tasks & validator tasks, right now we are in Phase 1.
-
-### Phase 1
-
-Phase 1 will be the beta version of OpenScope, as a cold start we want to OpenScope to be more friendly to participants, the requirements for miners and validators are less intense.
-
-Miners are required to send cryptocurrency trades based on provided live token events.
-
-This can do done by subscribe our live event feed.
-
-These trades should be based on the AI trading model trained with the provided history token events.
-
-We have already open sourced all the events training data on our huggingface space:
-
-[Event Trading Dataset](https://huggingface.co/datasets/0xscope/web3-trading-analysis)
-
-You can also read the descriptions about these data here:
-
-[Event Rules](https://huggingface.co/datasets/0xscope/event_rules)
-
-Validators will calculated each miner's performance score based on each miner's trades in each cycle.
-
-In a nutshell, the scores will be based on:
-
-1. Each miner's ROI
-2. Each miner's win rate
-
-A trade is considered "Win" if the return of this trade after 4 hours is positive.
-
-Win rate is considered important because we expect the trades are based on these events, instead of other trading strategies.
-
-These performances scores will used as each miner's performance to assign weights, the higher the value, the higher the weights.
-
-These weights will eventually decide the incentive of each miner, to be specifically the commune token they gets.
-
-
-### Phase 2
-
-Start from Phase 2, we will officially full utilize the power of the commune network.
-
-In Phase 1, miners are allowed to make trades manually.
-
-Start from Phase 2, miners' trades should be directly becomes a model's output (events as the input), which means the miner scripts should have their own logic to process the events and convert the signals to trades, just like a general AI model.
-
-Validators will still take trades and perform the usual tasks.
-
-### Phase 3
-
-In phase 3, miner's will be require to update their modules in each cycle and no longer need to send trades.
-
-Validators will directly evaluate the module's performance through a set of standards. To be more detailed, validators will consider the miners' module as a general AI model, input events and expect to receive trades.
-
-This will be the final form of the OpenScope Subnet.
-
 ## Motivation
 
 OpenScope - Unleashing the Power of Decentralized AI for Crypto Trading with OpenScope
@@ -125,45 +69,64 @@ And of course, you have to understand what should a miner do.
 
 Basically, each miner's will have the ability to send "trades" to our trade services.
 
-These trades is based on 10 different cryptocurrencies (token).
+These trades is based on 20 different cryptocurrencies (token) right now, and there will be more!
 
-Here is the list of the tokens and their addresses:
+Here is the list of the tokens we supported right now, we will use aggregated price to evaluate the price change instead of use a certain trading pair:
 
-| Symbol  | Name      | Chain | Address                                    |
-|---------|-----------|-------|--------------------------------------------|
-| LINK    | Chainlink | ETH   | 0x514910771af9ca656af840dff83e8264ecf986ca |
-| UNI     | Uniswap   | ETH   | 0x1f9840a85d5af5bf1d1762f925bdaddc4201f984 |
-| PEPE    | PEPE      | ETH   | 0x6982508145454ce325ddbe47a25d4ec3d2311933 |
-| FET     | FET       | ETH   | 0xaea46a60368a7bd060eec7df8cba43b7ef41ad85 |
-| Pendle  | PENDLE    | ETH   | 0x808507121b80c02388fad14726482e061b8da827 |
-| SSV     | SSV       | ETH   | 0x9d65ff81a3c488d585bbfb0bfe3c7707c7917f54 |
-| ARKM    | Arkham    | ETH   | 0x6e2a43be0b1d33b726f0ca3b8de60b3482b8b050 |
-| ENS     | ENS       | ETH   | 0xc18360217d8f7ab5e7c516566761ea12ce7f9d72 |
-| Auction | Bounce    | ETH   | 0xa9b1eb5908cfc3cdf91f9b8b3a74108598009096 |
-| ENA     | Ethena     | ETH   | 0x57e114b691db790c35207b2e685d4a43181e6061 |
+| Symbol  | Name      |
+|---------|-----------|
+| BTC   | Bitcoin |
+| ETH    | Ethereum |
+| ARB    | Arbitrum |
+| OP    | Optimism |
+| ONDO   | Ondo Finance |
+| APE    | Ape |
+| BLUR    | Blur |
+| AAVE    | Aave |
+| LDO    | Lido |
+| SNX    | Synthtix |
+| UNI     | Uniswap   |
+| PEPE    | PEPE      |
+| FET     | FET       |
+| Pendle  | PENDLE    |
+| SSV     | SSV       |
+| ARKM    | Arkham    |
+| ENS     | ENS       |
+| Auction | Bounce    |
+| ENA     | Ethena     |
 
 
 Miners can open positions (open) and close positions (close) based on these tokens.
 
-Each token is independent and all start with the same position size. This means each trading pair contributes to 10% of the total portfolio value at Genesis.
+Opening a position can be either going long (1) or going short (-1).
 
-Opening a position can be either going long (1) or going short (-1) (Max 1X Leverage, basically spot but you can short). 
+You can use leverage to control your exposures, open a position with 1x leverage means you used your whole position value to long/short this token.
 
-**Example:**
+For each trade, we will take a certain amount of fees to prevent super high-frequency trading.
 
-Let's say on Day 0, my total position value starts with 1 USD.
+The fees are as follows:
 
-And I have 10 sub-accounts, each account has a 0.1 value (or USD).
+- BTC/ETH: 0.05% 
+- Other Token: 0.1% * Leverage
 
-And for each sub-account, you can only trade one specific token. 
+#### How do your trades affect positions' value & returns:
 
-On Day 0, I only created a $PEPE long position.
+Let's say there are 20 token pairs right now and assume everybody’s initial position value is $20. 
 
-On Day 1, cause $PEPE is up 50%, my $PEPE sub-account is now worth 0.15.
+Open a BTC long 1x is basically using $20 to long BTC 
+Open another ETH long 1x means I use $20 to long ETH 
 
-As other sub-accounts stay no change (no open position).
+Now I'm using $40 which means my current leverage is 2x. 
 
-My total position value is 1.05 USD, and my current ROI is 5%.
+If ETH goes up by 5% and BTC goes down by 2%:
+
+My current position value is now 20+(20*0.05+20*(-0.02)) = 20.6
+
+My return now is 20.6/20 = 3%
+
+This also means my max total leverage (in terms of the whole account) can do is (maxleverage_bypair)*pair_mount
+
+#### Use the OpenSource Dataset to train your strategy
 
 Miner will need to constantly update the positions ([send the trades](/doc/Miner.md#run-the-miner)) and these trades should be based on the live token events.
 
@@ -184,24 +147,75 @@ We have already open sourced all the events training data on our huggingface spa
 
 If you want to start the miner first before you have a working strategy model, or you just want to run the miner with easy mode.
 
-The miner example we provide can help you with than, once you serve the miner, it will run a very basic strategy that send trades each day automatically (we call it IQ50 miner).
+The miner example we provide can help you with than, once you serve the miner, it will run a very basic strategy that send 3 trades (random token, random action, 0.1 leverage) each time you run it (we call it IQ50 miner).
 
 Just follow the [guide](../openscope/doc/Miner.md) and you will have a fully functional miner on the OpenScope subnet.
 
 Notice:
 
-The strategy is completely random so your performance score is fully random too. We wish the best luck of you but suggest you have a stable strategy once you know how everything works. 
+The strategy is completely random so your score is fully random too. We wish the best luck of you but suggest you have a stable strategy once you know how everything works. 
 
 ### Join as a validator
 
-Validators query trades from our trade services and use these trades to calculate the miners' performance score.
+#### Validator Scoring
 
-In a nutshell, the scores will be based on:
+Validators query trades from our trade services and use these trades and the positions to calculate a score for each miner.
 
-1. Each miner's Position ROI
-2. Each miner's Trade Win Rate
+The score is super simple:
 
-A trade is considered "Win" if the return of this trade after 4 hours is positive.
+Validators collect all your history position data to calculate the [serenity ratio](https://www.keyquant.com/Download/GetFile?Filename=%5CPublications%5CKeyQuant_WhitePaper_APT_Part1.pdf), an advance investment strategy risk & performance measurement indicator.
+
+
+On top of this, validator apply penalties to your serenity score. The penalties are based on your max drawdown, the higher your drawdown, the lower your score.
+
+#### Score to Weight
+
+The rank will totally based on the score.
+
+The weights will based on the rank.
+
+The rank will be based on the following levels:
+
+- Top 3 25% of the weights
+- Top 4- Top 10  25% of the weights
+- Top 10 - Top 25 25% of the weights
+- Top 20 - Top 50 25% of the weights
+
+If miners are on the same level, the weights for each miner will be based on the portion of their scores in the total scores, for example:
+
+For the Top 3, their scores are 0.9 0.6 0.5
+
+So for the top one, the weight share he will get is 0.9 / (0.9+0.6+0.5) = 45%
+
+#### Eliminations (Not Available yet)
+
+Elimination: The miner is marked as "eliminated" and will not receive weights until he gets de-registered and reg again
+
+*Not active Elimination*:
+
+If miner meet one of the following criteria after immune period:
+
+Have <=1 trades
+Have <1 position
+
+*Copy-trading elimination*: (Metric Checkpoint)
+
+If 2 miners are found to have same trade for the past 7 days, the miners later registered will be kicked out. Only the earliest miner will stay in the subnet if multiple miners are detected.
+
+*Bad Performance Elimination*:
+
+If the miner's position returns after the immune period is found to be lower than -50% for 2 straight days or accumulated 5 days.
+
+
+*Liquidation Elimination*:
+
+If a miner’s position return is found to be under -95% for one time by each validator interval, it will be eliminated. This is to simulate the liquidation under high leverage. Due to the crypto pair’s high volatility, with high leverage miner’s position return can change very fast.
+
+*MDD Elimination*
+
+The max drawdown we allow is 25%, which means if your drawdown is higher than 25%, your miner will be eliminated.
+
+#### Run the validator
 
 All of the tasks and calculation is written in the validator examples, once you start the process, it will help you do everything from querying the trades, calculating performance scores and set the weights.
 
