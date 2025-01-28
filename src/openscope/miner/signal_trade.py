@@ -111,6 +111,7 @@ class TradeModule(ABC, Module):
         except JSONDecodeError as json_err:
             raise HTTPException(status_code=500, detail="Failed to decode JSON response") from json_err
         except Exception as e:
+            print(e)
             raise HTTPException(status_code=500, detail="An unexpected error occurred") from e
 
     @endpoint

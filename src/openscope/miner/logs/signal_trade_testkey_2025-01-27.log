@@ -1,0 +1,19 @@
+2025-01-27 13:44:26.640 | INFO     | __main__:<module>:152 - Running module with key 5CfjkoBAQ2LvJRmdcsoWXKSZkzR4k2KvpDVf2u1ohgm3UczR
+2025-01-27 13:44:58.533 | INFO     | __main__:trade:71 - data: {'token': '0x6982508145454ce325ddbe47a25d4ec3d2311933', 'position_manager': 'open', 'direction': -1, 'leverage': 0.1}
+2025-01-27 13:44:58.533 | INFO     | __main__:trade:96 - trade_data: {'miner_id': '5CfjkoBAQ2LvJRmdcsoWXKSZkzR4k2KvpDVf2u1ohgm3UczR', 'pub_key': '1ab7fb1fdcbf11d185df7c0eae1948fafc024c64220ca2a6407870dd37ed8a60', 'nonce': 1738007098533, 'token': '0x6982508145454ce325ddbe47a25d4ec3d2311933', 'position_manager': 'open', 'direction': -1, 'timestamp': 1738007098, 'leverage': 0.1, 'signature': 'ae6b8587b84959c0cfa8360af6788df90a258dd9da93b414526cf9bc5e6c8368a5323528bd60af725a8f9bcc9d8345de7dd1dc1dfd4febcd92299928d878ee8a'}
+2025-01-27 13:44:59.069 | INFO     | __main__:trade:105 - 404 page not found
+2025-01-27 14:07:17.065 | INFO     | __main__:<module>:152 - Running module with key 5CfjkoBAQ2LvJRmdcsoWXKSZkzR4k2KvpDVf2u1ohgm3UczR
+2025-01-27 14:29:54.644 | INFO     | __main__:<module>:152 - Running module with key 5CfjkoBAQ2LvJRmdcsoWXKSZkzR4k2KvpDVf2u1ohgm3UczR
+2025-01-27 14:35:00.857 | INFO     | __main__:<module>:152 - Running module with key 5CfjkoBAQ2LvJRmdcsoWXKSZkzR4k2KvpDVf2u1ohgm3UczR
+2025-01-27 14:40:03.310 | INFO     | __main__:<module>:152 - Running module with key 5CfjkoBAQ2LvJRmdcsoWXKSZkzR4k2KvpDVf2u1ohgm3UczR
+2025-01-27 15:28:45.854 | INFO     | __main__:<module>:152 - Running module with key 5CfjkoBAQ2LvJRmdcsoWXKSZkzR4k2KvpDVf2u1ohgm3UczR
+2025-01-27 15:37:42.964 | INFO     | __main__:<module>:152 - Running module with key 5CfjkoBAQ2LvJRmdcsoWXKSZkzR4k2KvpDVf2u1ohgm3UczR
+2025-01-27 15:57:30.158 | INFO     | __main__:<module>:152 - Running module with key 5CfjkoBAQ2LvJRmdcsoWXKSZkzR4k2KvpDVf2u1ohgm3UczR
+2025-01-27 16:01:45.575 | INFO     | __main__:<module>:152 - Running module with key 5CfjkoBAQ2LvJRmdcsoWXKSZkzR4k2KvpDVf2u1ohgm3UczR
+2025-01-27 16:01:53.669 | INFO     | __main__:trade:71 - data: {'token': '0x6982508145454ce325ddbe47a25d4ec3d2311933', 'position_manager': 'open', 'direction': -1, 'leverage': 0.1}
+2025-01-27 16:01:53.670 | INFO     | __main__:trade:96 - trade_data: {'miner_id': '5CfjkoBAQ2LvJRmdcsoWXKSZkzR4k2KvpDVf2u1ohgm3UczR', 'pub_key': '1ab7fb1fdcbf11d185df7c0eae1948fafc024c64220ca2a6407870dd37ed8a60', 'nonce': 1738015313670, 'token': '0x6982508145454ce325ddbe47a25d4ec3d2311933', 'position_manager': 'open', 'direction': -1, 'timestamp': 1738015313, 'leverage': 0.1, 'signature': '3cc7b2c1c9ad791d621dd2c491a3cb7ba219a495c88cdd303dc02b6442244201e8c7b17d4ea2ad6ebef87c71d0cd6a192daaf6d67af19cbf6de7256ad0222e80'}
+2025-01-27 16:01:54.139 | INFO     | __main__:trade:105 - 404 page not found
+2025-01-27 16:18:08.832 | INFO     | __main__:<module>:152 - Running module with key 5CfjkoBAQ2LvJRmdcsoWXKSZkzR4k2KvpDVf2u1ohgm3UczR
+2025-01-27 16:18:12.197 | INFO     | __main__:trade:71 - data: {'token': '0x6982508145454ce325ddbe47a25d4ec3d2311933', 'position_manager': 'open', 'direction': -1, 'leverage': 0.1}
+2025-01-27 16:18:12.198 | INFO     | __main__:trade:96 - trade_data: {'miner_id': '5CfjkoBAQ2LvJRmdcsoWXKSZkzR4k2KvpDVf2u1ohgm3UczR', 'pub_key': '1ab7fb1fdcbf11d185df7c0eae1948fafc024c64220ca2a6407870dd37ed8a60', 'nonce': 1738016292197, 'token': '0x6982508145454ce325ddbe47a25d4ec3d2311933', 'position_manager': 'open', 'direction': -1, 'timestamp': 1738016292, 'leverage': 0.1, 'signature': '0ee8beb791d1d1f120fc0ff36e48ae95ce2c8ffe2eb17f771e427b892099f2464386f929c5dfc1ae32917e39858a96906f60eaefa26ab8217068c12ee53e1c8c'}
+2025-01-27 16:18:12.938 | INFO     | __main__:trade:105 - {"code":500,"msg":"miner not registered","data":null}
